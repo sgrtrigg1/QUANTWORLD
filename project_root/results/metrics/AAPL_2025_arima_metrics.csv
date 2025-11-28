@@ -1,2 +1,2 @@
-Model,Order,Ticker,Year,N_Obs,MAE,RMSE,MAPE,Directional_Accuracy
+Model,Order,Ticker,Year,Observations,MAE,RMSE,MAPE,Directional_Accuracy
 ARIMA,1 1 1 ,AAPL,2025,69,28.541033811000386,32.45746111,10.91109521661532,0.20588235294117646
