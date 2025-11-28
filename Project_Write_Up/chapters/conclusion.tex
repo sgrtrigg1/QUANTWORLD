@@ -1,0 +1,151 @@
+\chapter{Conclusion and Future Work}
+\label{ch:conclusion}
+
+This dissertation investigated the application of artificial intelligence techniques to quantitative finance, focusing on forecasting short-term price movements, identifying market regimes and evaluating model performance under non-stationary conditions. A complete end-to-end modelling pipeline was implemented, covering data collection, cleaning, feature engineering, exploratory analysis, supervised learning, unsupervised learning, deep learning and reinforcement learning. The results highlight both the potential and the limitations of AI methodologies when applied to noisy, structurally unstable financial time series.
+
+\section{Summary of Findings}
+
+\subsection{Effectiveness of Classical Models}
+Classical models such as Ordinary Least Squares (OLS) remain highly valuable as baselines in financial forecasting. While global OLS performed poorly due to high bias, the sliding-window variant demonstrated competitive performance:
+\begin{itemize}
+    \item mid-sized windows produced the lowest combined bias and variance,
+    \item rolling slopes successfully captured local market regimes,
+    \item simple adaptive models often outperformed more complex approaches.
+\end{itemize}
+
+These results show that carefully tuned classical methods can match—and in some cases surpass—machine-learning models when the underlying data are noisy and non-stationary.
+
+\subsection{Supervised Machine Learning and Regime Classification}
+Supervised learning, particularly logistic regression, proved highly effective for identifying bull, bear and sideways regimes. Directional classification performance was strong in clear trending markets but weakened near regime boundaries, reflecting true market ambiguity rather than model failure.
+
+Regime structure provided meaningful context for interpreting model performance and demonstrated that:
+\begin{itemize}
+    \item classification models benefit from stable features such as returns, volatility and moving-average distance,
+    \item regime segmentation improves interpretability and robustness,
+    \item supervised results align strongly with unsupervised clusters and PCA-derived factors.
+\end{itemize}
+
+\subsection{Unsupervised Learning Reveals Robust Market Structure}
+Unsupervised methods, including K-Means and PCA, consistently uncovered:
+\begin{itemize}
+    \item high-volatility negative-return states (bear regimes),
+    \item low-volatility positive-return states (bull regimes),
+    \item medium-volatility oscillating states (sideways regimes).
+\end{itemize}
+
+The strong alignment between supervised and unsupervised techniques demonstrates that market structure is reproducible across methodologies. PCA results further indicated that market behaviour can be explained by a small number of latent factors, primarily trend and volatility.
+
+\subsection{Deep Learning Models Are Limited by Financial Noise}
+Artificial Neural Networks (ANNs) and Long Short-Term Memory networks (LSTMs) captured non-linear and sequential patterns, but improvements over classical models were modest. Key findings include:
+\begin{itemize}
+    \item LSTMs outperform ANNs during sustained trends or clear temporal dependencies,
+    \item performance deteriorates in sideways or high-noise markets,
+    \item deep models are sensitive to window size, hyperparameters and limited sample sizes.
+\end{itemize}
+
+These results highlight that deep learning effectiveness in finance is strongly constrained by:
+\begin{itemize}
+    \item limited dataset size at daily frequency,
+    \item high levels of stochastic price movement,
+    \item structural breaks and evolving market regimes.
+\end{itemize}
+
+Thus, the data—rather than the model architecture—often determine the ceiling of predictability.
+
+\subsection{Reinforcement Learning Demonstrates Conceptual Value}
+A simple reinforcement-learning agent illustrated policy-based decision-making. While performance was limited, the experiment highlighted:
+\begin{itemize}
+    \item the suitability of RL for sequential trading and hedging tasks,
+    \item the difficulty of learning stable policies in noisy environments,
+    \item the importance of reward design, state representation and transaction costs.
+\end{itemize}
+
+Including RL conceptually strengthens the dissertation by demonstrating awareness of modern algorithmic trading paradigms.
+
+\section{Assessment Against Aims and Objectives}
+The dissertation successfully met all stated aims:
+
+\subsection*{Aim 1 — Develop a unified modelling pipeline}
+\textbf{Achieved.}  
+A reproducible, modular end-to-end pipeline was implemented for preprocessing, feature engineering, modelling and evaluation.
+
+\subsection*{Aim 2 — Evaluate supervised, unsupervised and deep-learning methods}
+\textbf{Achieved.}  
+All selected model families were implemented and tested under consistent conditions.
+
+\subsection*{Aim 3 — Analyse behaviour under non-stationarity}
+\textbf{Achieved.}  
+Sliding windows, bias–variance analysis and regime-based evaluation directly addressed market instability.
+
+\subsection*{Aim 4 — Identify strengths and limitations of AI models in finance}
+\textbf{Achieved.}  
+A critical comparison across classical, machine-learning, deep-learning and reinforcement-learning models was provided.
+
+\section{Limitations}
+Despite meeting its objectives, several limitations must be acknowledged:
+
+\begin{itemize}
+    \item \textbf{Daily-frequency data} restrict sequential learning; higher-frequency data would provide richer structure for LSTMs and RL.
+    \item \textbf{Limited hyperparameter tuning} may have constrained ANN and LSTM performance.
+    \item \textbf{Single-asset focus} limits generalisability; multi-asset datasets could reveal cross-market interactions.
+    \item \textbf{Simplified RL environment} excluded transaction costs, slippage and execution constraints.
+    \item \textbf{Static train/test splits} were used; walk-forward or online learning approaches may enhance realism.
+\end{itemize}
+
+These limitations motivate several promising avenues for further research.
+
+\section{Future Work}
+
+\subsection{Use Higher-Frequency or Alternative Data Sources}
+Deep models and RL would benefit from richer datasets such as:
+\begin{itemize}
+    \item minute- or tick-level order-book data,
+    \item sentiment scores from financial NLP models,
+    \item macroeconomic time series,
+    \item volatility indices and option-implied metrics.
+\end{itemize}
+
+\subsection{Incorporate Transformer-Based Architectures}
+Transformers have revolutionised sequential modelling. Promising architectures include:
+\begin{itemize}
+    \item Temporal Fusion Transformers (TFT),
+    \item Transformer encoders for price sequences,
+    \item multimodal transformers combining price and textual data.
+\end{itemize}
+
+\subsection{Enhance Regime-Aware Forecasting}
+Models that explicitly condition on regime state could outperform static approaches. Examples include:
+\begin{itemize}
+    \item regime-aware LSTMs,
+    \item Markov-switching neural networks,
+    \item hierarchical frameworks combining clustering and forecasting.
+\end{itemize}
+
+\subsection{Develop Realistic RL Trading Environments}
+Future RL work should incorporate:
+\begin{itemize}
+    \item slippage and bid–ask spreads,
+    \item position-size optimisation,
+    \item transaction costs and market impact,
+    \item rolling or online agent training.
+\end{itemize}
+
+\subsection{Expand to Multi-Asset and Cross-Sectional Modelling}
+Extending models across multiple assets would enable analysis of:
+\begin{itemize}
+    \item covariance structure,
+    \item sector rotation,
+    \item factor exposures,
+    \item portfolio optimisation and risk balancing.
+\end{itemize}
+
+\section{Final Remarks}
+This dissertation demonstrates that while AI provides powerful tools for analysing financial markets, performance is fundamentally constrained by:
+\begin{itemize}
+    \item data quality,
+    \item structural instability,
+    \item weak signal-to-noise ratios.
+\end{itemize}
+
+Models must therefore be designed with financial context in mind, prioritising interpretability, robustness and adaptability. By integrating classical, machine-learning, deep-learning and reinforcement-learning approaches, this project offers a comprehensive evaluation of modern AI techniques and their suitability for quantitative finance.
+

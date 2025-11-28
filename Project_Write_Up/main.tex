@@ -1,0 +1,69 @@
+\documentclass[12pt,a4paper]{report}
+
+% Packages
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{pdfpages}
+\usepackage{csvsimple}
+
+
+\geometry{margin=1in}
+\onehalfspacing
+
+\begin{document}
+
+% ---------------------------------------------------------
+% FRONT MATTER (PERSONAL — WILL BE REMOVED FOR MARKING)
+% ---------------------------------------------------------
+\input{frontmatter/titlepage}
+\input{frontmatter/dedication}
+\input{frontmatter/acknowledgements}
+
+% ---------------------------------------------------------
+% ANONYMOUS FRONT MATTER
+% ---------------------------------------------------------
+\input{frontmatter/anonymous_title}
+\input{frontmatter/abstract}
+\input{frontmatter/ethical}
+
+% ---------------------------------------------------------
+% TABLE OF CONTENTS
+% ---------------------------------------------------------
+\tableofcontents
+\clearpage
+
+% ---------------------------------------------------------
+% CHAPTERS
+% ---------------------------------------------------------
+\input{chapters/introduction}
+\input{chapters/background}
+\input{chapters/methodology}
+\input{chapters/supervised}
+\input{chapters/unsupervised}
+\input{chapters/deeplearning}
+\input{chapters/reinforcement}
+\input{chapters/results}
+\input{chapters/discussion}
+\input{chapters/ethics}
+\input{chapters/conclusion}
+\input{chapters/bcs}
+
+% ---------------------------------------------------------
+% REFERENCES
+% ---------------------------------------------------------
+\bibliographystyle{agsm} % Harvard style
+\bibliography{references}
+
+% ---------------------------------------------------------
+% APPENDICES
+% ---------------------------------------------------------
+\appendix
+\input{appendices/appendix_a}
+\input{appendices/appendix_b}
+
+\end{document}

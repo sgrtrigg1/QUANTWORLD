@@ -1,0 +1,133 @@
+\chapter{Methodology}
+\label{ch:methodology}
+
+This chapter describes the complete methodology used to collect, preprocess and analyse financial time-series data, and outlines the modelling architecture applied throughout the dissertation. The approach is implemented as a structured end-to-end pipeline, ensuring consistency, reproducibility and comparability across all models. All experiments were conducted in Python using a modular object-oriented design incorporating classes for data collection, feature engineering, exploratory analysis, model training and evaluation.
+
+\section{Data Collection}
+Financial data were sourced from Yahoo Finance, a widely used platform for academic research due to its accessibility, reliability and extensive historical coverage. Data were downloaded using the open-source \texttt{yfinance} Python library, which provides programmatic access to daily Open, High, Low, Close, Adjusted Close and Volume (OHLCV) variables.
+
+This source is adequate for short-term price prediction tasks and is representative of real-world market conditions. The dataset consists of daily price data for selected equities such as AAPL, TSLA and MSFT, captured over multi-year horizons. These instruments were chosen due to their liquidity, stable market presence and extensive prior literature, allowing meaningful comparison with existing findings. The resulting time series provide a suitable basis for forecasting experiments, regime detection and model benchmarking.
+
+\section{Data Cleaning}
+Raw historical data often contain inconsistencies arising from missing values, irregular indexing or multi-index formatting. Although Yahoo Finance datasets are relatively clean, preprocessing is essential to ensure that modelling assumptions—particularly chronological ordering and uniform sampling—are satisfied. The preprocessing stage addressed the following issues:
+
+\subsection{Index Correction}
+Downloaded datasets occasionally include a multi-index structure combining ticker symbols and dates. The first step was to reset the index and convert the datetime column into a proper \texttt{DatetimeIndex}, ensuring correct temporal ordering and enabling rolling-window operations.
+
+\subsection{Removal of Empty or Redundant Rows}
+Some downloads include a blank or partially filled second row prior to the first valid observation. This was removed to prevent misalignment during feature construction and modelling.
+
+\subsection{Normalisation of OHLCV Ordering}
+The OHLCV variables were reordered to the conventional sequence (Open, High, Low, Close, Volume), ensuring compatibility with standard plotting utilities, candlestick chart functions and technical-indicator formulas.
+
+\subsection{Handling Missing Data}
+Occasional missing values—typically due to holidays or API irregularities—were forward-filled to maintain continuity. Since the dataset is daily frequency and short gaps are rare, forward filling is appropriate and avoids introducing artificial noise.
+
+\subsection{Stationarity Awareness}
+Although the raw data are non-stationary, no transformations were applied at this early stage. Instead, stationarity-sensitive processing (e.g., differencing, detrending, rolling-window operations) was delegated to the feature-engineering stage. Preprocessing therefore produces a clean, chronologically indexed dataset suitable for forecasting and regime-detection tasks.
+
+\section{Feature Engineering}
+Feature engineering transforms raw price data into structured inputs better suited for machine-learning models. In financial time series, engineered features often capture trend, momentum, volatility and mean-reversion characteristics. This dissertation employs a comprehensive feature-engineering module with the following transformations:
+
+\subsection{Log Returns and Percentage Returns}
+Daily returns were computed to stabilise variance and convert raw prices into a stationary-like series. Returns also form the basis for directional classification (up vs.\ down days).
+
+\subsection{Normalised Price Series}
+Prices were normalised using z-scores and min–max scaling to ensure comparability across assets and prevent magnitude differences from dominating training.
+
+\subsection{Trend and Momentum Indicators}
+Common technical indicators were calculated, including:
+\begin{itemize}
+    \item Simple Moving Averages (SMA),
+    \item Exponential Moving Averages (EMA),
+    \item Moving Average Convergence Divergence (MACD),
+    \item Rate of Change (ROC).
+\end{itemize}
+These indicators help models detect local trend structure and momentum shifts.
+
+\subsection{Volatility Indicators}
+Rolling standard deviations, Average True Range (ATR) and realised volatility were computed to quantify risk conditions and feed into regime-classification tasks.
+
+\subsection{Oscillators and Normalised Measures}
+Indicators such as the Relative Strength Index (RSI) and stochastic oscillators were included to capture overbought/oversold conditions and short-term cyclical patterns.
+
+\subsection{Sliding-Window Features}
+Sliding-window modelling requires features aligned across overlapping windows. Rolling means, rolling slopes and lagged values were generated to support OLS, logistic regression, ANN and LSTM models. All features were saved to \texttt{data/processed/} to ensure full reproducibility.
+
+\section{Exploratory Data Analysis (EDA)}
+Exploratory Data Analysis provides an initial assessment of market behaviour and ensures that input data are suitable for modelling. The EDA conducted in this study includes:
+
+\subsection{OHLC and Trend Visualisation}
+Line plots and candlestick charts reveal major price swings, trend reversals and volatility clusters—useful for understanding model targets.
+
+\subsection{Return Series and Cumulative Performance}
+Daily returns were plotted alongside cumulative returns for buy-and-hold and compounding strategies, highlighting risk–reward profiles.
+
+\subsection{Volatility Analysis}
+Rolling volatility plots identify periods of high stress or stability—critical for evaluating models sensitive to noise.
+
+\subsection{Correlation Heatmaps}
+Correlation heatmaps among engineered features expose collinearity, guiding feature selection and PCA-based dimensionality reduction.
+
+\subsection{Return Distributions}
+Histograms and kernel density estimates illustrate skewness, kurtosis and fat-tailed behaviour, emphasising the challenge of using linear models on heavy-tailed data.
+
+\subsection{Regime Diagnostics}
+Rolling slopes and moving averages highlight local market regimes, later explored further using supervised and unsupervised techniques.
+
+\section{Pipeline Architecture}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{pipeline.png}
+    \caption{End-to-end modelling pipeline used for data preparation, feature generation and model execution.}
+    \label{fig:pipeline}
+\end{figure}
+
+The pipeline is implemented through the following dedicated classes:
+
+\begin{itemize}
+    \item \texttt{FinancialDataCollector}
+    \item \texttt{FeatureEngineering}
+    \item \texttt{ExploratoryAnalysis}
+    \item \texttt{OLSRegression} / \texttt{SlidingWindowRegression}
+    \item \texttt{ClassifierModels} (Logistic Regression)
+    \item \texttt{DLModels} (ANN, LSTM)
+    \item \texttt{UnsupervisedModels} (K-Means, PCA)
+\end{itemize}
+
+\section{Model Implementation}
+This dissertation evaluates a wide range of AI models, grouped into supervised, unsupervised and deep learning categories.
+
+\subsection{Classical Regression Models}
+\textbf{Global OLS}: provides a high-bias baseline.  
+\textbf{Sliding-Window OLS}: adapts to local regimes; central to the bias–variance analysis.  
+\textbf{Polynomial Regression}: included to illustrate overfitting under high model complexity.
+
+\subsection{Supervised Classification Models}
+\textbf{Logistic Regression}: used for directional prediction (up/down) and regime-state classification.
+
+\subsection{Unsupervised Learning Models}
+\textbf{K-Means Clustering}: discovers latent volatility–return regimes.  
+\textbf{Principal Component Analysis (PCA)}: reduces dimensionality and uncovers latent structure.
+
+\subsection{Deep Learning Models}
+\textbf{Artificial Neural Networks (ANNs)}: nonlinear supervised baseline.  
+\textbf{Long Short-Term Memory Networks (LSTMs)}: model sequential dependencies in returns and prices.
+
+\subsection{Reinforcement Learning (Optional)}
+A Q-Learning or DQN agent is included conceptually to illustrate sequential decision-making for trading.
+
+All models are trained using consistent train/test splits, feature sets and evaluation metrics to ensure fair comparison.
+
+\section{Evaluation Metrics}
+Model performance is assessed using the following metrics:
+
+\subsection*{Regression Metrics}
+Mean Absolute Error (MAE), Mean Squared Error (MSE) and Root Mean Squared Error (RMSE) measure prediction error magnitudes and sensitivity to outliers.
+
+\subsection*{Classification Metrics}
+Accuracy, precision, recall and confusion matrices evaluate the quality of directional prediction and regime classification.
+
+\subsection*{Rolling-Window Metrics}
+Rolling bias (difference between prediction and realised value), prediction variance across windows and empirically derived bias–variance curves are essential for evaluating models under non-stationary market dynamics.

@@ -1,0 +1,38 @@
+\chapter{Case Study Scenarios}
+\label{ch:case-studies}
+
+Artificial intelligence has transformed multiple areas of financial services, enabling faster, more informed and increasingly automated decision-making. This chapter presents four illustrative case-study scenarios demonstrating how AI techniques—many of which are implemented later in this dissertation—are used in practice across modern financial institutions. Each scenario highlights a distinct application area and introduces the underlying modelling challenges, motivating the methods explored in subsequent chapters.
+
+\section{Natural Language Processing for Market Sentiment and Financial Document Analysis}
+Financial analysts, portfolio managers and economists routinely consume large volumes of textual information, including news articles, regulatory filings, analyst reports, earnings-call transcripts and social-media commentary. Manually processing this information at scale is impractical, creating demand for automated Natural Language Processing (NLP) tools that extract sentiment, detect risk-related phrases, classify document tone or summarise relevant events.
+
+NLP-driven sentiment analysis helps identify shifts in investor mood, providing early indicators of volatility, momentum changes or emerging risks. For example, transformer-based language models can be fine-tuned to classify documents as bullish, bearish or neutral. The aggregated sentiment is then used as an input to forecasting models or regime classifiers.
+
+However, NLP systems face substantial challenges in financial contexts. Ambiguity, domain-specific jargon and subtle shifts in phrasing can lead to misclassifications. Overreacting to irrelevant text may introduce noise, whereas underreacting to critical information may prevent models from signalling regime changes or emerging risks. These issues emphasise the importance of robust preprocessing, high-quality training corpora and careful integration with market data.
+
+\section{Anomaly Detection in Trading Activity and Market Surveillance}
+Modern financial markets process millions of trading events daily, a small proportion of which may involve manipulative or illegal behaviour such as insider trading, spoofing, layering or wash trades. Surveillance teams increasingly rely on machine-learning systems to detect anomalies that deviate from expected behaviour.
+
+Unsupervised learning is particularly effective here because anomalous events are rare, and labelled datasets are difficult to obtain. Methods such as clustering, autoencoders and isolation forests can identify unusual patterns in order-book dynamics, trade sequences or price movements without requiring predefined labels.
+
+A major challenge is calibration. High sensitivity may cause excessive false positives, overwhelming compliance teams, while low sensitivity risks missing genuine market abuse, exposing institutions to severe financial and regulatory penalties. These trade-offs highlight why anomaly detection is a core application area for the unsupervised and semi-supervised learning techniques explored later in this dissertation.
+
+\section{Risk Forecasting and Portfolio Allocation: The Cost of Misclassification}
+Quantitative analysts generate risk forecasts that influence multi-million-pound trading and investment decisions. AI-driven risk models analyse historical volatility, cross-asset relationships, returns distributions and macroeconomic indicators to classify market conditions or estimate future risk levels.
+
+Misclassification has highly asymmetric consequences. Underestimating risk—for example, classifying a volatile regime as stable—may lead to excessive exposure and substantial losses. Overestimating risk generally leads to more conservative positioning, reducing returns but avoiding catastrophic downside. This asymmetry makes accurate model calibration particularly important.
+
+Logistic regression, regime classifiers and volatility models must therefore be evaluated not only on statistical accuracy but also on their impact on financial decision-making. Later chapters revisit these ideas through supervised classification and regime-detection experiments.
+
+\section{Recommendation Systems in Quantitative Finance}
+Recommendation systems, common in digital platforms such as Netflix or Amazon, are increasingly used in portfolio management and retail trading applications. AI-driven recommenders support investors by suggesting assets, strategies or trades aligned with user preferences, risk tolerance or historical behaviour.
+
+Applications include:
+\begin{itemize}
+    \item asset recommendations in platforms such as eToro or Robinhood;
+    \item portfolio rebalancing suggestions in robo-advisors;
+    \item cross-asset similarity detection, identifying correlated or co-moving assets;
+    \item factor-based recommendations, suggesting exposures to value, momentum, quality or macroeconomic themes.
+\end{itemize}
+
+Advanced institutional platforms, such as BlackRock’s \textit{Aladdin}, provide multi-factor risk insights, scenario analysis and portfolio recommendations using large-scale machine-learning systems. Although the most sophisticated implementations are beyond the scope of this dissertation, they motivate the practical relevance of the models implemented later—particularly supervised and unsupervised techniques that discover structure or generate predictive signals from financial data.

@@ -1,0 +1,101 @@
+\chapter{Supervised Learning Models}
+\label{ch:supervised}
+
+Supervised learning plays a central role in financial forecasting, where the objective is to infer a mapping between historical market features and predictive targets such as future prices, returns or market direction. This chapter presents the supervised models implemented in this dissertation, beginning with regression techniques and then addressing classification for market-regime detection. Special attention is given to the bias–variance trade-off, which is fundamental for understanding how model flexibility interacts with noisy and non-stationary financial data.
+
+\section{Regression Models}
+Regression methods are widely used in quantitative finance due to their interpretability and long-standing role in econometrics. Ordinary Least Squares (OLS) regression, in particular, provides a transparent linear baseline for trend estimation and forecasting. However, its performance in financial contexts is strongly affected by structural breaks, volatility regimes and non-linear price behaviour.
+
+\subsection{Global OLS Regression}
+To establish a baseline, a global OLS model was fitted to an entire year of daily prices (Equation~\ref{eq:global_ols}). The resulting linear trend provides a single slope and intercept representing the best-fitting line across the full dataset. However, as illustrated in Figure~\ref{fig:global_ols}, a single linear trend inadequately reflects real market behaviour. Financial time series exhibit directional shifts, volatility clusters and regime transitions—none of which can be captured by a static global model.
+
+The global OLS trend produces consistently large systematic errors, demonstrating classic high-bias behaviour. This motivates the use of more adaptive techniques, including segmented regression and rolling-window OLS.
+
+\subsection{Underfitting and Structural Changes}
+Underfitting becomes apparent when a model trained on one segment of data is applied to another. When an OLS model fitted to the first half of the year is extended to forecast the second half, predictions diverge sharply from realised prices (Figure~\ref{fig:underfitting}). This occurs because:
+\begin{itemize}
+    \item the slope learned from the first half no longer reflects the trend in the second half;
+    \item the model assumes a fixed linear relationship over time;
+    \item financial markets experience regime changes that violate this assumption.
+\end{itemize}
+
+These findings reinforce that global OLS is too rigid for financial forecasting and motivate the use of rolling or segmented models.
+
+\subsection{Sliding-Window OLS Regression}
+To allow the model to adapt to local price dynamics, a rolling-window OLS regression was implemented using the estimator defined in Equation~\ref{eq:rolling_ols}. Each window produces a local slope and intercept based on the most recent $w$ observations, and forecasts for the next time step are made via Equation~\ref{eq:rolling_forecast}. This procedure generates a sequence of overlapping linear models, each reflecting short-term market conditions.
+
+Rolling-window OLS is particularly useful for detecting changes in local momentum, identifying bull/bear regimes and reducing global bias. The rolling slope visualisation (Figure~\ref{fig:rolling_slope}) shows the slope repeatedly switching sign across the year, indicating transitions between upward-trending, downward-trending and sideways markets. These transitions align with known market regimes and form a natural connection to later classification and clustering models.
+
+Sliding-window OLS therefore forms the foundation for analysing bias, variance and adaptability in supervised regression.
+
+\section{Bias–Variance Trade-Off}
+Financial time series are noisy and non-stationary, exhibiting both short-term randomness and long-term structural variation. The bias–variance trade-off provides an essential framework for understanding how model flexibility affects these characteristics.
+
+\subsection{Bias in Global vs.\ Local OLS Models}
+Bias refers to systematic prediction error. A global OLS model exhibits high bias because it assumes the same linear relationship across the entire dataset. As demonstrated in Figure~\ref{fig:bias_comparison}, global OLS consistently over- or underestimates prices depending on the prevailing trend regime.
+
+In contrast, sliding-window OLS adapts to local structure and significantly reduces bias. Shorter windows adjust more quickly to trend changes, improving responsiveness but increasing sensitivity to noise.
+
+Empirical results show:
+\begin{itemize}
+    \item Global OLS $\rightarrow$ high systematic bias;
+    \item Local OLS (short windows) $\rightarrow$ low bias, high responsiveness;
+    \item Local OLS (long windows) $\rightarrow$ moderate bias, improved stability.
+\end{itemize}
+
+This illustrates the fundamental tension between flexibility and robustness.
+
+\subsection{Variance in Sliding-Window Models}
+Variance measures how much model predictions change in response to small perturbations in the data. In volatile or non-stationary markets, high-variance models may overreact to noise, producing unstable forecasts.
+
+Figure~\ref{fig:prediction_variance} shows that:
+\begin{itemize}
+    \item Small windows (e.g.\ $w=40$) generate large spikes in prediction variance, especially around regime transitions.
+    \item Medium windows (e.g.\ $w=80$) balance responsiveness and stability.
+    \item Large windows (e.g.\ $w=120$) smooth noise but reintroduce bias due to slower adaptation.
+\end{itemize}
+
+This behaviour aligns with the bias–variance decomposition in Equation~\ref{eq:bv_decomposition}.
+
+\subsection{Empirical Bias–Variance Curve}
+The empirical bias–variance curve (Figure~\ref{fig:bias_variance_curve}) summarises how model performance changes with window size:
+\begin{itemize}
+    \item Bias increases monotonically with window length;
+    \item Variance decreases monotonically with window length;
+    \item A critical window size minimises total error.
+\end{itemize}
+
+This operating point represents the optimal trade-off between adaptability and stability for OLS-based forecasting. Identifying such a region is essential when designing models for noisy, regime-shifting financial time series.
+
+\section{Market Regime Classification}
+Market regimes represent underlying states such as bull markets, bear markets and sideways consolidation periods. Identifying these states is crucial for strategic asset allocation, risk management and algorithmic trading. Supervised classification models provide an interpretable and transparent framework for recognising such patterns using engineered features.
+
+\subsection{Regime Definition and Feature Design}
+Regimes were defined using combinations of rolling:
+\begin{itemize}
+    \item returns,
+    \item volatility,
+    \item moving-average distances,
+    \item momentum indicators (e.g.\ RSI, ROC).
+\end{itemize}
+These features capture directional trends, risk conditions and deviations from long-term averages.
+
+\subsection{Logistic Regression Classifier}
+Logistic regression was selected as a baseline classifier due to its interpretability and robustness. The model maps feature inputs to probabilities of belonging to each regime class (e.g.\ bullish, bearish, sideways). The training procedure used:
+\begin{itemize}
+    \item 70\% of data for training, 30\% for testing;
+    \item standardised input features;
+    \item balanced class weights where necessary.
+\end{itemize}
+
+The outputs include predicted labels, class probabilities and a confusion matrix for performance assessment.
+
+\subsection{Evaluation and Interpretation}
+The confusion matrix illustrates how effectively the classifier identifies true market regimes. Common patterns include:
+\begin{itemize}
+    \item high precision for strong bull and bear regimes where trends are clear;
+    \item lower accuracy in sideways markets, which are more ambiguous and noise-dominated;
+    \item misclassifications near regime boundaries, which reflect genuine uncertainty.
+\end{itemize}
+
+These results are consistent with financial intuition: regime transitions are inherently difficult to detect, while stable phases are easier for models to classify. Logistic regression therefore provides a robust supervised baseline for regime labelling, later compared with unsupervised clustering models to assess structural alignment.

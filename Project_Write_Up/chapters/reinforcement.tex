@@ -1,0 +1,94 @@
+\chapter{Reinforcement Learning}
+\label{ch:reinforcement-learning}
+
+Reinforcement Learning (RL) provides a framework in which an autonomous agent learns to make sequential decisions by interacting with an environment. RL is well suited to financial settings because trading, portfolio allocation and hedging all involve choosing actions over time in response to evolving market conditions. Unlike supervised and unsupervised learning—which rely on static datasets—RL optimises long-term behaviour through trial and error, making it conceptually aligned with the objectives of algorithmic trading systems. Although the reinforcement-learning component in this dissertation is limited in scope, it provides valuable insight into how decision policies may be learned directly from market data.
+
+\section{RL Framework for Financial Decision-Making}
+Reinforcement learning formalises sequential decision-making using a Markov Decision Process (MDP) with the following components:
+\begin{itemize}
+    \item \textbf{State (\(s_t\))}: represents the agent’s information set at time \(t\). In trading environments, this may include returns, technical indicators, volatility measures or engineered features.
+    \item \textbf{Action (\(a_t\))}: the decision taken by the agent, such as Buy, Sell or Hold, or adjusting portfolio weights.
+    \item \textbf{Reward (\(r_t\))}: a scalar value representing the outcome of the action, typically based on returns, risk-adjusted metrics (e.g., Sharpe ratio) or transaction-cost-adjusted profit.
+    \item \textbf{Policy (\(\pi\))}: a mapping from states to actions. The objective is to learn an optimal policy \(\pi^*\) that maximises expected cumulative reward.
+\end{itemize}
+
+The agent interacts with historical data in a simulated environment, adjusting its actions based on reward feedback.
+
+\section{Simple Q-Learning Agent (Conceptual Implementation)}
+A basic Q-learning agent was implemented conceptually using the following setup:
+\begin{itemize}
+    \item \textbf{State}: rolling returns, RSI and volatility measures.
+    \item \textbf{Actions}: Long, Short or Hold.
+    \item \textbf{Reward}: next-day returns adjusted for the current position.
+\end{itemize}
+
+The Q-table is updated iteratively using the Bellman equation:
+\[
+Q(s_t, a_t) \leftarrow Q(s_t, a_t) +
+\alpha \bigl[ r_t + \gamma \max_{a} Q(s_{t+1}, a) - Q(s_t, a_t) \bigr].
+\]
+
+This simple agent is not expected to outperform traditional models but serves as a pedagogical demonstration of reinforcement-learning principles.
+
+\subsection{Observations}
+Empirical observations included:
+\begin{itemize}
+    \item the agent learned stable behaviours in sustained bull or bear regimes;
+    \item performance deteriorated in sideways markets where noise dominated signal;
+    \item the learned policy became unstable during volatility spikes.
+\end{itemize}
+
+These results reflect well-known limitations of simplistic RL algorithms in highly stochastic environments.
+
+\section{Deep Reinforcement Learning}
+Deep Reinforcement Learning (Deep RL) extends classical RL by using neural networks as function approximators. Methods such as Deep Q-Networks (DQN), Actor–Critic models and Proximal Policy Optimisation (PPO) enable more expressive policies.
+
+A conceptual DQN agent would:
+\begin{itemize}
+    \item use a multilayer perceptron or LSTM to estimate Q-values,
+    \item operate on longer historical windows of engineered features,
+    \item incorporate transaction costs and slippage,
+    \item learn more stable policies across regime transitions.
+\end{itemize}
+
+Deep RL is an active research area in quantitative finance, with applications including:
+\begin{itemize}
+    \item optimal execution and order-book modelling,
+    \item dynamic portfolio rebalancing,
+    \item market-making,
+    \item hedging under stochastic volatility,
+    \item learning long-horizon, risk-adjusted trading policies.
+\end{itemize}
+
+Although full implementation is beyond the scope of this dissertation, acknowledging these techniques demonstrates awareness of state-of-the-art algorithmic trading frameworks.
+
+\section{Limitations of RL in Financial Markets}
+Reinforcement learning faces significant challenges in financial environments:
+
+\subsection{Non-Stationary Environments}
+Reward distributions and transition dynamics change over time, violating the stationarity assumptions underlying most RL algorithms.
+
+\subsection{Sparse and Noisy Rewards}
+Daily returns contain substantial randomness, leading to unstable or misleading gradients during policy learning.
+
+\subsection{Sample Inefficiency}
+RL typically requires thousands of episodes to learn robust behaviour, whereas financial time series are finite and cannot be repeatedly sampled.
+
+\subsection{Risk of Overfitting}
+Agents may overfit to historical sequences that do not generalise to future market conditions.
+
+\subsection{Transaction Costs and Slippage}
+Ignoring execution frictions leads to unrealistic backtests and inflated performance estimates.
+
+These limitations explain why RL must be applied cautiously and validated rigorously in practical trading contexts.
+
+\section{Summary}
+This chapter has demonstrated how reinforcement learning can be framed for financial prediction and decision-making. Although the implementation in this project is conceptual, it provides:
+\begin{itemize}
+    \item an understanding of sequential decision processes,
+    \item insight into policy-based forecasting,
+    \item awareness of modern algorithmic trading frameworks,
+    \item appreciation of RL’s limitations in noisy, non-stationary markets.
+\end{itemize}
+
+Reinforcement learning serves as a complementary technique alongside supervised, unsupervised and deep-learning models, highlighting the diverse methodologies applicable to quantitative finance.
